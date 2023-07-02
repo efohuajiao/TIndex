@@ -4,4 +4,9 @@
 
 <script setup lang="ts"></script>
 
-<style lang=""></style>
+<style>
+body {
+  margin: 0;
+  padding: 0;
+}
+</style>

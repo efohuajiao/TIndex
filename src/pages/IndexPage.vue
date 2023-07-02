@@ -1,8 +1,12 @@
 <template>
-  <h1>你好</h1>
-  <Tterminal></Tterminal>
+  <TnTerminal full-screen :on-submit-command="onSubmitCommand" />
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { doCommandParsing } from "../core/CommadnParsing";
+const onSubmitCommand = (inputText: string) => {
+  doCommandParsing(inputText);
+};
+</script>
 
 <style lang=""></style>
