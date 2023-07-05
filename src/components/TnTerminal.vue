@@ -44,10 +44,13 @@
 
 <script setup lang="ts">
 import { ref, computed, StyleValue } from "vue";
+
 //引入终端类型声明
 import CommandInputType = Tterminal.CommandInputType;
 import OutputType = Tterminal.OutputType;
 import CommandOutputType = Tterminal.CommandOutputType;
+import OutputStatusType = Tterminal.OutputStatusType;
+import TextOutputType = Tterminal.TextOutputType;
 //定义Props类型
 interface TnTerminalProps {
   height?: string | number; //高度
@@ -56,22 +59,20 @@ interface TnTerminalProps {
   onSubmitCommand?: (inputText: string) => void; //提交命令
 }
 
-const activeKey = ref(["1"]);
+const activeKey = ref(["1"]); //折叠框是否折叠
 //初始化命令
 const initCommand: CommandInputType = {
   text: "",
   placeholder: "",
 };
-
 const InputCommand = ref<CommandInputType>({
   //输入命令
   ...initCommand,
 });
-
 const outputList = ref<OutputType[]>([]); //已输出命令集，用于在上面展示
-
 const isRunning = ref(false); // 命令是否运行
 const commandInputRef = ref(); //绑定输入框
+
 const props = withDefaults(defineProps<TnTerminalProps>(), {
   height: "400px",
   fullScreen: false,
@@ -93,10 +94,17 @@ const doSubmitCommand = async () => {
   InputCommand.value = { ...initCommand };
   isRunning.value = false;
 };
+
 //输入框聚焦
 const inputFocus = () => {
   commandInputRef.value.focus();
 };
+
+//清屏
+const clear = () => {
+  outputList.value = [];
+};
+
 //终端主样式
 const mainStyle = computed(() => {
   let fullScreenStyle: StyleValue = {
@@ -113,6 +121,20 @@ const mainStyle = computed(() => {
       };
 });
 
+/*
+  输出文本
+  params
+    text:文本
+    status:状态
+*/
+const writeTextOutput = (text: string, status?: OutputStatusType) => {
+  const newOutput: TextOutputType = {
+    text,
+    type: "text",
+    status,
+  };
+  return newOutput;
+};
 // 点击空白聚焦输入框
 const handleClickWrapper = (event: Event): void => {
   //@ts-ignore
@@ -120,6 +142,18 @@ const handleClickWrapper = (event: Event): void => {
     inputFocus();
   }
 };
+
+//操作终端的方法
+const terminal = {
+  inputFocus,
+  doSubmitCommand,
+  clear,
+};
+
+defineExpose({
+  //使用setup，父组件无法通过ref获取子组件的属性，需要通过defineEpose自行暴露
+  terminal,
+});
 </script>
 
 <style lang="less" scoped>

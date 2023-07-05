@@ -18,9 +18,26 @@ declare namespace Tterminal {
     text: string; //文本
     resultList: OutputType[];
   }
+
   //命令输入类型
   interface CommandInputType {
     text: string;
     placeholder?: string;
+  }
+
+  //文本输出类型
+  interface TextOutputType extends OutputType {
+    type: "text"; //类型为文本
+    text: string; //具体的text
+  }
+
+  //声明terminal中命令的类型,用来操作终端
+  interface TerminalType {
+    //清屏
+    clear: () => void;
+    //聚焦文本框
+    inputFocus: () => void;
+    //提交命令
+    doSubmitCommand: () => void;
   }
 }
