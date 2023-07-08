@@ -1,6 +1,7 @@
 declare namespace Tterminal {
   // 输出状态
   type OutputStatusType = "info" | "success" | "warning" | "error" | "system";
+
   //输出类型
   interface OutputType {
     type: "command" | "text" | "compinent"; //输出类型
@@ -35,9 +36,29 @@ declare namespace Tterminal {
   interface TerminalType {
     //清屏
     clear: () => void;
+
     //聚焦文本框
     inputFocus: () => void;
+
     //提交命令
     doSubmitCommand: () => void;
+
+    //立即输出文本
+    writeTextOutput: (
+      text: string,
+      status?: OutputStatusType
+    ) => TextOutputType;
+
+    //写入文本错误状态结果
+    writeTextErrorResult: (text: string) => void;
+
+    //写入文本成功状态结果
+    writeTextSuccessResult: (text: string) => void;
+
+    //写入文本结果
+    writeTextResult: (text: string, status?: OutputStatusType) => void;
+
+    //写入结果
+    writeResult: (output: OutputType) => void;
   }
 }

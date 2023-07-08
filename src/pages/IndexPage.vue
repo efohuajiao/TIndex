@@ -11,7 +11,7 @@ import { ref } from "vue";
 import { doCommandExecute } from "../core/CommadnParsing";
 const terminalRef = ref();
 const onSubmitCommand = (inputText: string) => {
-  const terminal = terminalRef.value;
+  const terminal: Tterminal.TerminalType = terminalRef.value.terminal;
   doCommandExecute(inputText, terminal);
 };
 </script>

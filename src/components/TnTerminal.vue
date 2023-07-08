@@ -4,20 +4,27 @@
     <div class="Tterminal" :style="mainStyle">
       <!-- 已输出命令 -->
       <a-collapse
-        v-model:activeKey="activeKey"
+        v-model:activeKey="activeKeys"
         :bordered="false"
         expand-icon-position="right"
       >
         <template v-for="(output, index) in outputList" :key="index">
           <a-collapse-panel class="terminal-row">
             <template #header>
-              <span style="user-select: none; margin-right: 10px"
-                >[local]$</span
-              >
+              <span style="user-select: none; margin-right: 10px">{{
+                prompt
+              }}</span>
               <span>
                 {{ output.text }}
               </span>
             </template>
+            <div
+              v-for="(result, idx) in output.resultList"
+              :key="idx"
+              class="terminal-row"
+            >
+              <content-output :output="result" />
+            </div>
           </a-collapse-panel>
         </template>
       </a-collapse>
@@ -34,7 +41,7 @@
           @press-enter="doSubmitCommand"
         >
           <template #addonBefore>
-            <span class="command-input-prompt">[local]$</span>
+            <span class="command-input-prompt">{{ prompt }}</span>
           </template>
         </a-input>
       </div>
@@ -43,39 +50,55 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, StyleValue } from "vue";
+import { ref, computed, StyleValue, toRefs } from "vue";
+import ContentOutput from "./ContentOutput.vue";
 
+//引入默认用户
+import { LOCAL_USER } from "@/core/commands/user/userDefault";
+import { UserType } from "@/core/commands/user/type"; // 引用用户类型声明
 //引入终端类型声明
 import CommandInputType = Tterminal.CommandInputType;
 import OutputType = Tterminal.OutputType;
 import CommandOutputType = Tterminal.CommandOutputType;
 import OutputStatusType = Tterminal.OutputStatusType;
 import TextOutputType = Tterminal.TextOutputType;
+import TerminalType = Tterminal.TerminalType;
 //定义Props类型
 interface TnTerminalProps {
   height?: string | number; //高度
   fullScreen?: boolean; //是否全屏
+  user?: UserType;
   // eslint-disable-next-line vue/require-default-prop
   onSubmitCommand?: (inputText: string) => void; //提交命令
 }
 
-const activeKey = ref(["1"]); //折叠框是否折叠
+const activeKeys = ref<number[]>([]); //折叠框是否折叠
+
 //初始化命令
 const initCommand: CommandInputType = {
   text: "",
   placeholder: "",
 };
+
 const InputCommand = ref<CommandInputType>({
   //输入命令
   ...initCommand,
 });
+
 const outputList = ref<OutputType[]>([]); //已输出命令集，用于在上面展示
+let currentNewCommand: CommandOutputType; //记录当前执行的命令
 const isRunning = ref(false); // 命令是否运行
 const commandInputRef = ref(); //绑定输入框
 
+// 给props设置默认值
 const props = withDefaults(defineProps<TnTerminalProps>(), {
   height: "400px",
   fullScreen: false,
+  user: LOCAL_USER as any,
+});
+const { user } = toRefs(props); // toRefs能将所给对象的第一层的节点设置为响应式，而toRef是将所给对象的所有节点设置为响应式
+const prompt = computed(() => {
+  return `[${user.value?.username}]$`;
 });
 
 //提交命令
@@ -88,10 +111,12 @@ const doSubmitCommand = async () => {
     text: inputText,
     resultList: [],
   };
+  currentNewCommand = newCommand; //将新命令赋值给当前命令
   await props.onSubmitCommand?.(inputText); //?.是可选操作符，如果onSubmitCommand存在则运行，不存在返回undefined不会报错
-  outputList.value.push(newCommand);
 
+  outputList.value.push(newCommand);
   InputCommand.value = { ...initCommand };
+  activeKeys.value.push(outputList.value.length - 1);
   isRunning.value = false;
 };
 
@@ -103,6 +128,71 @@ const inputFocus = () => {
 //清屏
 const clear = () => {
   outputList.value = [];
+};
+
+/*
+  输出文本
+  params
+    text:文本
+    status:状态
+*/
+const writeTextOutput = (text: string, status?: OutputStatusType) => {
+  const newOutput: TextOutputType = {
+    text,
+    type: "text",
+    status,
+  };
+  return newOutput;
+};
+
+/**
+ * @description: 写入文本错误状态结果
+ * @param {*} text 文本
+ * @return {*}
+ */
+const writeTextErrorResult = (text: string) => {
+  writeTextOutput(text, "error");
+};
+
+/**
+ * @description: 写入文本成功状态结果
+ * @param {*} text
+ * @return {*}
+ */
+const writeTextSuccessResult = (text: string) => {
+  writeTextOutput(text, "success");
+};
+
+/**
+ * @description: 输出文本
+ * @param {*} text
+ * @param {*} status
+ * @return {*}
+ */
+const writeTextResult = (text: string, status?: OutputStatusType) => {
+  const newOutput: TextOutputType = {
+    text,
+    status,
+    type: "text",
+  };
+  currentNewCommand.resultList.push(newOutput);
+};
+
+/**
+ * @description: 将命令执行的结果写入当前命令的resultList中
+ * @param {*} output 输出结果
+ * @return {*}
+ */
+const writeResult = (output: OutputType) => {
+  currentNewCommand.resultList.push(output);
+};
+
+// 点击空白聚焦输入框
+const handleClickWrapper = (event: Event): void => {
+  //@ts-ignore
+  if (event.target.className == "Tterminal") {
+    inputFocus();
+  }
 };
 
 //终端主样式
@@ -120,36 +210,17 @@ const mainStyle = computed(() => {
         height: props.height,
       };
 });
-
-/*
-  输出文本
-  params
-    text:文本
-    status:状态
-*/
-const writeTextOutput = (text: string, status?: OutputStatusType) => {
-  const newOutput: TextOutputType = {
-    text,
-    type: "text",
-    status,
-  };
-  return newOutput;
-};
-// 点击空白聚焦输入框
-const handleClickWrapper = (event: Event): void => {
-  //@ts-ignore
-  if (event.target.className == "Tterminal") {
-    inputFocus();
-  }
-};
-
 //操作终端的方法
-const terminal = {
+const terminal: TerminalType = {
   inputFocus,
   doSubmitCommand,
   clear,
+  writeTextOutput,
+  writeTextErrorResult,
+  writeTextSuccessResult,
+  writeResult,
+  writeTextResult,
 };
-
 defineExpose({
   //使用setup，父组件无法通过ref获取子组件的属性，需要通过defineEpose自行暴露
   terminal,
