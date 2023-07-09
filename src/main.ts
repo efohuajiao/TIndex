@@ -11,4 +11,9 @@ const router = VueRouter.createRouter({
 });
 app.use(router);
 
+//引入pinia
+import { createPinia } from "pinia";
+const pinia = createPinia();
+app.use(pinia);
+
 app.mount("#app");

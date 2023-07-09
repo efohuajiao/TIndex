@@ -1,6 +1,10 @@
 <template>
   <!-- 最外层包裹 -->
-  <div class="Tterminal-wrapper" @click="handleClickWrapper">
+  <div
+    class="Tterminal-wrapper"
+    :style="wrapperStyle"
+    @click="handleClickWrapper"
+  >
     <div class="Tterminal" :style="mainStyle">
       <!-- 已输出命令 -->
       <a-collapse
@@ -9,7 +13,8 @@
         expand-icon-position="right"
       >
         <template v-for="(output, index) in outputList" :key="index">
-          <a-collapse-panel class="terminal-row">
+          <!-- 可折叠的命令 -->
+          <a-collapse-panel v-if="output.collapsible" class="terminal-row">
             <template #header>
               <span style="user-select: none; margin-right: 10px">{{
                 prompt
@@ -18,14 +23,32 @@
                 {{ output.text }}
               </span>
             </template>
-            <div
-              v-for="(result, idx) in output.resultList"
-              :key="idx"
-              class="terminal-row"
-            >
-              <content-output :output="result" />
-            </div>
           </a-collapse-panel>
+          <!-- 不可折叠的命令 -->
+          <template v-else>
+            <!-- 是命令的话需要保留输入的命令 -->
+            <template v-if="output.type === 'command'">
+              <div class="terminal-row">
+                <span style="user-select: none; margin-right: 10px">{{
+                  prompt
+                }}</span>
+                <span>{{ output.text }}</span>
+              </div>
+              <div
+                v-for="(result, idx) in output.resultList"
+                :key="idx"
+                class="terminal-row"
+              >
+                <content-output :output="result" />
+              </div>
+            </template>
+            <!-- 不是命令直接输出文本 -->
+            <template v-else>
+              <div class="terminal-row">
+                <content-output :output="output" />
+              </div>
+            </template>
+          </template>
         </template>
       </a-collapse>
       <!-- 输入框 -->
@@ -50,12 +73,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, StyleValue, toRefs } from "vue";
+import { ref, computed, StyleValue, toRefs, onMounted } from "vue";
 import ContentOutput from "./ContentOutput.vue";
 
 //引入默认用户
 import { LOCAL_USER } from "@/core/commands/user/userDefault";
 import { UserType } from "@/core/commands/user/type"; // 引用用户类型声明
+
+//引入store
+import { useTerminalConfigStore } from "@/store/terminalConfigStore";
+
 //引入终端类型声明
 import CommandInputType = Tterminal.CommandInputType;
 import OutputType = Tterminal.OutputType;
@@ -101,6 +128,9 @@ const prompt = computed(() => {
   return `[${user.value?.username}]$`;
 });
 
+// 使用pinia
+const configStore = useTerminalConfigStore();
+
 //提交命令
 const doSubmitCommand = async () => {
   isRunning.value = true;
@@ -142,7 +172,7 @@ const writeTextOutput = (text: string, status?: OutputStatusType) => {
     type: "text",
     status,
   };
-  return newOutput;
+  outputList.value.push(newOutput);
 };
 
 /**
@@ -151,7 +181,7 @@ const writeTextOutput = (text: string, status?: OutputStatusType) => {
  * @return {*}
  */
 const writeTextErrorResult = (text: string) => {
-  writeTextOutput(text, "error");
+  writeTextResult(text, "error");
 };
 
 /**
@@ -160,7 +190,7 @@ const writeTextErrorResult = (text: string) => {
  * @return {*}
  */
 const writeTextSuccessResult = (text: string) => {
-  writeTextOutput(text, "success");
+  writeTextResult(text, "success");
 };
 
 /**
@@ -195,7 +225,7 @@ const handleClickWrapper = (event: Event): void => {
   }
 };
 
-//终端主样式
+// 终端主样式
 const mainStyle = computed(() => {
   let fullScreenStyle: StyleValue = {
     position: "fixed",
@@ -210,6 +240,32 @@ const mainStyle = computed(() => {
         height: props.height,
       };
 });
+// 终端包装类样式
+const wrapperStyle = computed(() => {
+  const { background } = configStore;
+  const style = { ...mainStyle.value };
+  console.log(background);
+
+  if (background.startsWith("http")) {
+    style.background = `url(${background})`;
+  } else {
+    style.background = background;
+  }
+  return style;
+});
+
+onMounted(() => {
+  terminal.writeTextOutput(
+    `Welcome to TIndex, coolest browser index for geeks!` +
+      `<a href="//github.com/liyupi/yuindex" target='_blank'> GitHub Open Source</a>`
+  );
+  terminal.writeTextOutput(
+    `Author <a href="//docs.qq.com/doc/DUFFRVWladXVjeUxW" target="_blank">coder_truett</a>` +
+      `: please input 'help' to enjoy`
+  );
+  terminal.writeTextOutput("<br/>");
+});
+
 //操作终端的方法
 const terminal: TerminalType = {
   inputFocus,
@@ -232,7 +288,7 @@ defineExpose({
   background-color: black;
 }
 .Tterminal {
-  background: rgba(0, 0, 0);
+  background: rgba(0, 0, 0, 0.6);
   padding: 20px;
   overflow: scroll;
 }
