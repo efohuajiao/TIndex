@@ -4,7 +4,7 @@ declare namespace Tterminal {
 
   //输出类型
   interface OutputType {
-    type: "command" | "text" | "compinent"; //输出类型
+    type: "command" | "text" | "component"; //输出类型
     text?: string; //文本
     resultList?: OutputType[];
     component?: any; //组件
@@ -44,10 +44,7 @@ declare namespace Tterminal {
     doSubmitCommand: () => void;
 
     //立即输出文本
-    writeTextOutput: (
-      text: string,
-      status?: OutputStatusType
-    ) => TextOutputType;
+    writeTextOutput: (text: string, status?: OutputStatusType) => void;
 
     //写入文本错误状态结果
     writeTextErrorResult: (text: string) => void;

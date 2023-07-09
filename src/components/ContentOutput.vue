@@ -4,7 +4,10 @@
       <a-tag v-if="outputTagColor" :color="outputTagColor">{{
         output.status
       }}</a-tag>
-      <span v-if="output.text">{{ output.text }}</span>
+      <span v-if="output.text" v-html="output.text"></span>
+    </template>
+    <template v-if="output.type === 'component'">
+      <component :is="output.component"> </component>
     </template>
   </div>
 </template>
@@ -37,7 +40,7 @@ const outputTagColor = computed((): string => {
 });
 </script>
 
-<style lang="less">
+<style scoped>
 .content-output :deep(.ant-tag) {
   border-radius: 0;
   font-size: 16px;
