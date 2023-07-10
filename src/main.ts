@@ -13,7 +13,9 @@ app.use(router);
 
 //引入pinia
 import { createPinia } from "pinia";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate"; // 持久化存储
 const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
 app.use(pinia);
 
 app.mount("#app");

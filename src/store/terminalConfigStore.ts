@@ -8,6 +8,10 @@ export const useTerminalConfigStore = defineStore("terminalConfig", {
     };
   },
   getters: {},
+  persist: {
+    key: "terminalConfig",
+    storage: window.sessionStorage,
+  },
   actions: {
     /**
      * @description: 设置终端背景
