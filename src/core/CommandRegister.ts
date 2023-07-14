@@ -1,11 +1,16 @@
 // 引入命令
 import dateCommand from "./commands/dateCommand";
-import { backgroundCommand } from "./commands/terminal/config/backgroundCommand";
+import backgroundCommand from "./commands/terminal/config/backgroundCommand";
+import hintCommnad from "./commands/terminal/config/HintCommand";
 
 import CommandType = Command.CommandType;
 
 //命令列表
-const commandList: CommandType[] = [dateCommand, backgroundCommand];
+const commandList: CommandType[] = [
+  dateCommand,
+  backgroundCommand,
+  hintCommnad,
+];
 
 //命令字典
 const commandMap: Record<string, CommandType> = {};

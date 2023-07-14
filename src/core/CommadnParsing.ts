@@ -1,7 +1,7 @@
 // 引入getopt对参数进行解析
 import getopts, { ParsedOptions } from "getopts";
 // 引入命令集
-import { commandList, commandMap } from "./CommanRegister";
+import { commandList, commandMap } from "./CommandRegister";
 
 // 引入终端类型声明
 import TerminalType = Tterminal.TerminalType;
@@ -32,6 +32,7 @@ export const doCommandExecute = async (
     return;
   }
   const parsedOptions = doParse(inputText, command.options);
+
   await doAction(command, terminal, parsedOptions);
 };
 
@@ -42,8 +43,8 @@ export const doCommandExecute = async (
  * @return {*}
  */
 const getCommand = (text: string, parentCommand?: CommandType): CommandType => {
-  text = text.trim(); //取出命令前面的空格
-  let func = text.split(" ")[0];
+  text = text.trim(); // 去除命令前面的空格
+  let func = text.split(" ", 1)[0];
   const command = commandMap[func];
   return command;
 };
@@ -59,12 +60,14 @@ const doParse = (
   // 过滤关键词
   const args: string[] = text.split(" ").slice(1);
   const options: getopts.Options = {
+    // 定义解析库所需要的参数
     alias: {},
     default: {},
     string: [],
     boolean: [],
   };
   commandOptions.forEach((commandOption) => {
+    // 将自己所定义的参数分配给解析库的参数
     const { alias, key, type, defaultValue } = commandOption;
     if (alias && options.alias) {
       options.alias[key] = alias;
@@ -89,5 +92,5 @@ const doAction = async (
   terminal: TerminalType,
   options: ParsedOptions
 ) => {
-  await command.action(null, terminal);
+  await command.action(options, terminal);
 };

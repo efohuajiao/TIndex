@@ -2,7 +2,7 @@ import axios from "axios";
 import { useTerminalConfigStore } from "@/store/terminalConfigStore";
 import CommandType = Command.CommandType;
 
-export const backgroundCommand: CommandType = {
+const backgroundCommand: CommandType = {
   func: "background",
   name: "切换终端背景",
   alias: ["bg"],
@@ -24,3 +24,4 @@ export const backgroundCommand: CommandType = {
       });
   },
 };
+export default backgroundCommand;

@@ -4,13 +4,16 @@ export const useTerminalConfigStore = defineStore("terminalConfig", {
   state: () => {
     return {
       // eslint-disable-next-line prettier/prettier
+      // 背景
       background: "black",
+      // 输入提示
+      isShowHint: true,
     };
   },
   getters: {},
   persist: {
     key: "terminalConfig",
-    storage: window.sessionStorage,
+    storage: window.localStorage,
   },
   actions: {
     /**
@@ -22,6 +25,24 @@ export const useTerminalConfigStore = defineStore("terminalConfig", {
       if (url) {
         this.background = url;
       }
+    },
+
+    /**
+     * @description: 是否打开提示
+     * @param {string} hint 表示hint命令后面跟的子命令是on还是off
+     * @return {*}
+     */
+    setToggleHint(hint: string): boolean {
+      if (!hint) {
+        this.isShowHint = !this.isShowHint;
+        return this.isShowHint;
+      }
+      if (hint === "on") {
+        this.isShowHint = true;
+      } else if (hint === "off") {
+        this.isShowHint = false;
+      }
+      return this.isShowHint;
     },
   },
 });

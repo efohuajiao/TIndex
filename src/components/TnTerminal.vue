@@ -68,12 +68,17 @@
           </template>
         </a-input>
       </div>
+      <!-- 输入提示-->
+      <div v-if="hint && !isRunning" class="terminal-row" style="color: #bbb">
+        hint：{{ hint }}
+      </div>
+      <div style="margin-bottom: 16px" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, StyleValue, toRefs, onMounted } from "vue";
+import { ref, computed, StyleValue, toRefs, onMounted, watchEffect } from "vue";
 import ContentOutput from "./ContentOutput.vue";
 
 //引入默认用户
@@ -82,6 +87,9 @@ import { UserType } from "@/core/commands/user/type"; // 引用用户类型声�
 
 //引入store
 import { useTerminalConfigStore } from "@/store/terminalConfigStore";
+
+//引入提示
+import useHint from "@/hooks/hint";
 
 //引入终端类型声明
 import CommandInputType = Tterminal.CommandInputType;
@@ -128,6 +136,12 @@ const prompt = computed(() => {
   return `[${user.value?.username}]$`;
 });
 
+// 获取提示
+const { hint, setHint, deBounceSetHint } = useHint();
+watchEffect(() => {
+  deBounceSetHint(InputCommand.value.text);
+});
+
 // 使用pinia
 const configStore = useTerminalConfigStore();
 
@@ -135,6 +149,7 @@ const configStore = useTerminalConfigStore();
 const doSubmitCommand = async () => {
   isRunning.value = true;
   let inputText = InputCommand.value.text;
+  setHint("");
   //定义命令数组
   const newCommand: CommandOutputType = {
     type: "command",
@@ -244,7 +259,7 @@ const mainStyle = computed(() => {
 const wrapperStyle = computed(() => {
   const { background } = configStore;
   const style = { ...mainStyle.value };
-  console.log(background);
+  // console.log(background);
 
   if (background.startsWith("http")) {
     style.background = `url(${background})`;
