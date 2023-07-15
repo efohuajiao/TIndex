@@ -9,6 +9,7 @@ const dateCommand: CommandType = {
   func: "date",
   name: "日期",
   desc: "获取当前日期",
+  params: [],
   options: [],
   action(options, terminal): void {
     const dateStr = myDayjs().format("YYYY-MM-DD HH:mm:ss"); //获取当前时间

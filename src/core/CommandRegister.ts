@@ -2,7 +2,8 @@
 import dateCommand from "./commands/dateCommand";
 import backgroundCommand from "./commands/terminal/config/backgroundCommand";
 import hintCommnad from "./commands/terminal/config/HintCommand";
-
+import welcomeCommand from "./commands/terminal/config/welcomeCommand";
+import historyCommand from "./commands/terminal/historyCommand";
 import CommandType = Command.CommandType;
 
 //命令列表
@@ -10,6 +11,8 @@ const commandList: CommandType[] = [
   dateCommand,
   backgroundCommand,
   hintCommnad,
+  welcomeCommand,
+  historyCommand,
 ];
 
 //命令字典

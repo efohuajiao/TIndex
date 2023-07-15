@@ -57,5 +57,14 @@ declare namespace Tterminal {
 
     //写入结果
     writeResult: (output: OutputType) => void;
+
+    // 获取前一条历史记录
+    showPreCommand: () => void;
+
+    // 获取下一条历史记录
+    showNextCommand: () => void;
+
+    // 命令列表
+    listCommandHistory: () => CommandOutputType[];
   }
 }

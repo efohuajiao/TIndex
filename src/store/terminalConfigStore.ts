@@ -8,6 +8,8 @@ export const useTerminalConfigStore = defineStore("terminalConfig", {
       background: "black",
       // 输入提示
       isShowHint: true,
+      // 欢迎语句
+      welcomeText: [] as string[],
     };
   },
   getters: {},
@@ -43,6 +45,14 @@ export const useTerminalConfigStore = defineStore("terminalConfig", {
         this.isShowHint = false;
       }
       return this.isShowHint;
+    },
+    // 设置欢迎语句
+    setWelcomeText(text: string[]) {
+      this.welcomeText = text;
+    },
+    // 重置
+    reset() {
+      this.$reset();
     },
   },
 });

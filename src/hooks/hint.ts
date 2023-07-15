@@ -20,8 +20,11 @@ const useHint = () => {
     const args = trim(inputText).split(" ");
     // 获取用户输入的命令,并将其改为小写，这样就可以实现无视大小写
     const func = args[0].toLocaleLowerCase();
-    // 在命令map中搜索对应的命令
-    const likeKey = Object.keys(commandMap).filter((item) => item === func)[0];
+    // 在命令map中搜索对应的第一条命令
+    const likeKey = Object.keys(commandMap).filter((key) =>
+      // 在命令字典中获取以func开头的命令关键字
+      key.startsWith(func)
+    )[0];
     // 获取对应的命令
     let command = commandMap[likeKey];
     if (!command) {

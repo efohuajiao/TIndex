@@ -88,9 +88,12 @@ import { UserType } from "@/core/commands/user/type"; // 引用用户类型声�
 //引入store
 import { useTerminalConfigStore } from "@/store/terminalConfigStore";
 
-//引入提示
+// 引入提示hook
 import useHint from "@/hooks/hint";
-
+// 引入快捷键hook
+import { shortcutRegister } from "@/hooks/shortcut";
+// 引入历史记录hook
+import useHistory from "@/hooks/history";
 //引入终端类型声明
 import CommandInputType = Tterminal.CommandInputType;
 import OutputType = Tterminal.OutputType;
@@ -122,8 +125,11 @@ const InputCommand = ref<CommandInputType>({
 
 const outputList = ref<OutputType[]>([]); //已输出命令集，用于在上面展示
 let currentNewCommand: CommandOutputType; //记录当前执行的命令
-const isRunning = ref(false); // 命令是否运行
+
+const commandList = ref<CommandOutputType[]>([]); // 命令列表
 const commandInputRef = ref(); //绑定输入框
+
+const isRunning = ref(false); // 命令是否运行
 
 // 给props设置默认值
 const props = withDefaults(defineProps<TnTerminalProps>(), {
@@ -132,6 +138,7 @@ const props = withDefaults(defineProps<TnTerminalProps>(), {
   user: LOCAL_USER as any,
 });
 const { user } = toRefs(props); // toRefs能将所给对象的第一层的节点设置为响应式，而toRef是将所给对象的所有节点设置为响应式
+// 用户名
 const prompt = computed(() => {
   return `[${user.value?.username}]$`;
 });
@@ -142,14 +149,20 @@ watchEffect(() => {
   deBounceSetHint(InputCommand.value.text);
 });
 
+const {
+  commandHistoryPos,
+  showNextCommand,
+  showPreCommand,
+  listCommandHistory,
+} = useHistory(commandList.value, InputCommand);
 // 使用pinia
 const configStore = useTerminalConfigStore();
 
 //提交命令
 const doSubmitCommand = async () => {
   isRunning.value = true;
-  let inputText = InputCommand.value.text;
   setHint("");
+  let inputText = InputCommand.value.text;
   //定义命令数组
   const newCommand: CommandOutputType = {
     type: "command",
@@ -159,7 +172,13 @@ const doSubmitCommand = async () => {
   currentNewCommand = newCommand; //将新命令赋值给当前命令
   await props.onSubmitCommand?.(inputText); //?.是可选操作符，如果onSubmitCommand存在则运行，不存在返回undefined不会报错
 
+  // 添加输出，换行也输出
   outputList.value.push(newCommand);
+  // 不为空的命令才算有效命令
+  if (inputText) {
+    commandList.value.push(newCommand);
+    commandHistoryPos.value = commandList.value.length;
+  }
   InputCommand.value = { ...initCommand };
   activeKeys.value.push(outputList.value.length - 1);
   isRunning.value = false;
@@ -270,15 +289,23 @@ const wrapperStyle = computed(() => {
 });
 
 onMounted(() => {
-  terminal.writeTextOutput(
-    `Welcome to TIndex, coolest browser index for geeks!` +
-      `<a href="//github.com/liyupi/yuindex" target='_blank'> GitHub Open Source</a>`
-  );
-  terminal.writeTextOutput(
-    `Author <a href="//docs.qq.com/doc/DUFFRVWladXVjeUxW" target="_blank">coder_truett</a>` +
-      `: please input 'help' to enjoy`
-  );
-  terminal.writeTextOutput("<br/>");
+  shortcutRegister(terminal);
+  const { welcomeText } = configStore;
+  if (welcomeText?.length > 0) {
+    welcomeText.forEach((text) => {
+      terminal.writeTextOutput(text);
+    });
+  } else {
+    terminal.writeTextOutput(
+      `Welcome to TIndex, coolest browser index for geeks!` +
+        `<a href="https://github.com/efohuajiao/TIndex" target='_blank'> GitHub Open Source</a>`
+    );
+    terminal.writeTextOutput(
+      `Author <a href="//docs.qq.com/doc/DUFFRVWladXVjeUxW" target="_blank">coder_truett</a>` +
+        `: please input 'help' to enjoy`
+    );
+    terminal.writeTextOutput("<br/>");
+  }
 });
 
 //操作终端的方法
@@ -291,6 +318,9 @@ const terminal: TerminalType = {
   writeTextSuccessResult,
   writeResult,
   writeTextResult,
+  showNextCommand,
+  showPreCommand,
+  listCommandHistory,
 };
 defineExpose({
   //使用setup，父组件无法通过ref获取子组件的属性，需要通过defineEpose自行暴露
