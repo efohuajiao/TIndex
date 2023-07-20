@@ -189,9 +189,24 @@ const inputFocus = () => {
   commandInputRef.value.focus();
 };
 
+// 输入框是否聚焦
+const isInputFocus = () => {
+  return (
+    (commandInputRef.value.input as HTMLInputElement) === document.activeElement
+  );
+};
 //清屏
 const clear = () => {
   outputList.value = [];
+};
+
+// 快捷键补齐
+const setTabPatching = () => {
+  if (hint.value) {
+    InputCommand.value.text = `${hint.value.split(" ")[0]}${
+      hint.value.split(" ").length > 1 ? " " : ""
+    }`;
+  }
 };
 
 /*
@@ -311,6 +326,7 @@ onMounted(() => {
 //操作终端的方法
 const terminal: TerminalType = {
   inputFocus,
+  isInputFocus,
   doSubmitCommand,
   clear,
   writeTextOutput,
@@ -321,6 +337,7 @@ const terminal: TerminalType = {
   showNextCommand,
   showPreCommand,
   listCommandHistory,
+  setTabPatching,
 };
 defineExpose({
   //使用setup，父组件无法通过ref获取子组件的属性，需要通过defineEpose自行暴露

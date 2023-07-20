@@ -4,6 +4,8 @@ import backgroundCommand from "./commands/terminal/config/backgroundCommand";
 import hintCommnad from "./commands/terminal/config/HintCommand";
 import welcomeCommand from "./commands/terminal/config/welcomeCommand";
 import historyCommand from "./commands/terminal/historyCommand";
+import helpCommand from "./commands/terminal/help/helpCommand";
+
 import CommandType = Command.CommandType;
 
 //命令列表
@@ -13,6 +15,7 @@ const commandList: CommandType[] = [
   hintCommnad,
   welcomeCommand,
   historyCommand,
+  helpCommand,
 ];
 
 //命令字典

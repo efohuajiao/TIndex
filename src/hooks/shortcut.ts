@@ -81,5 +81,17 @@ export const shortcutRegister = (terminal: TerminalType) => {
         terminal.inputFocus();
       },
     },
+    {
+      code: "Tab",
+      desc: "快捷键补齐",
+      action(e, terminal) {
+        e.preventDefault();
+        if (terminal.isInputFocus()) {
+          terminal.setTabPatching();
+        } else {
+          return;
+        }
+      },
+    },
   ];
 };

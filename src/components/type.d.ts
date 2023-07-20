@@ -32,6 +32,12 @@ declare namespace Tterminal {
     text: string; //具体的text
   }
 
+  // 输出组件
+  interface ComponentOutputType extends OutputType {
+    type: "component";
+    component: any; // 组件
+    props?: any;
+  }
   //声明terminal中命令的类型,用来操作终端
   interface TerminalType {
     //清屏
@@ -40,6 +46,8 @@ declare namespace Tterminal {
     //聚焦文本框
     inputFocus: () => void;
 
+    // 文本框是否聚焦
+    isInputFocus: () => boolean;
     //提交命令
     doSubmitCommand: () => void;
 
@@ -66,5 +74,8 @@ declare namespace Tterminal {
 
     // 命令列表
     listCommandHistory: () => CommandOutputType[];
+
+    // 快捷键补齐
+    setTabPatching: () => void;
   }
 }

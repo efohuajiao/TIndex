@@ -7,7 +7,8 @@
       <span v-if="output.text" v-html="output.text"></span>
     </template>
     <template v-if="output.type === 'component'">
-      <component :is="output.component"> </component>
+      <component :is="output.component" v-bind="output.props ?? {}">
+      </component>
     </template>
   </div>
 </template>

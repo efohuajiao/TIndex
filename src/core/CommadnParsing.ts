@@ -20,6 +20,7 @@ export const doCommandExecute = async (
   terminal: TerminalType,
   parentCommand?: CommandType
 ) => {
+  inputText = inputText.trim();
   if (!inputText) {
     //如果没有命令，进行返回
     return;
@@ -32,6 +33,7 @@ export const doCommandExecute = async (
     return;
   }
   const parsedOptions = doParse(inputText, command.options);
+  console.log(parsedOptions);
 
   await doAction(command, terminal, parsedOptions);
 };

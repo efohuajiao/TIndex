@@ -82,3 +82,17 @@ export const getOptionKey = (option: CommandOptionType) => {
   }
   return "--" + option.key;
 };
+
+/**
+ * 获取选项关键词列表
+ * @param option
+ */
+export const getOptionKeyList = (option: CommandOptionType) => {
+  const list = [];
+  // 优先用简写
+  if (option.alias && option.alias.length > 0) {
+    list.push("-" + option.alias[0]);
+  }
+  list.push("--" + option.key);
+  return list;
+};
