@@ -7,6 +7,8 @@ import historyCommand from "./commands/terminal/historyCommand";
 import helpCommand from "./commands/terminal/help/helpCommand";
 import todoCommand from "./commands/todoCommand";
 import moyuCommand from "./commands/game";
+import baiduCommand from "./commands/search/baiduCommand";
+import githubCommand from "./commands/search/githubCommand";
 
 import CommandType = Command.CommandType;
 
@@ -20,6 +22,8 @@ const commandList: CommandType[] = [
   helpCommand,
   todoCommand,
   moyuCommand,
+  baiduCommand,
+  githubCommand,
 ];
 
 //命令字典

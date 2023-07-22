@@ -33,6 +33,7 @@ export const doCommandExecute = async (
     return;
   }
   const parsedOptions = doParse(inputText, command.options);
+  console.log(parsedOptions);
 
   const { _ } = parsedOptions;
   if (

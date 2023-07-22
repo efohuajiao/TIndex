@@ -17,6 +17,22 @@ export const getUsageStr = (
     str = parentCommand.func + " ";
   }
   str += command.func;
+  if (command.params && command.params.length > 0) {
+    const paramsStrList: string[] = command.params.map((param) => {
+      // 如果option有desc，就将word赋值为desc，否则就是key
+      let word = param.key;
+      if (param.desc) {
+        word = param.desc;
+      }
+      // 根据命令的param参数required是否为必须来决定命令的展示为<>还是[]
+      if (param.required) {
+        return `<${word}>`;
+      } else {
+        return `[${word}]`;
+      }
+    });
+    str += " " + paramsStrList.join(" ");
+  }
 
   if (command.options && command.options.length > 0) {
     const optionsStrList: string[] = command.options.map((option) => {
@@ -47,22 +63,7 @@ export const getUsageStr = (
     });
     str += " " + optionsStrList;
   }
-  if (command.params && command.params.length > 0) {
-    const paramsStrList: string[] = command.params.map((param) => {
-      // 如果option有desc，就将word赋值为desc，否则就是key
-      let word = param.key;
-      if (param.desc) {
-        word = param.desc;
-      }
-      // 根据命令的param参数required是否为必须来决定命令的展示为<>还是[]
-      if (param.required) {
-        return `<${word}>`;
-      } else {
-        return `[${word}]`;
-      }
-    });
-    str += " " + paramsStrList.join(" ");
-  }
+
   if (
     command.params &&
     command.params.length === 0 &&

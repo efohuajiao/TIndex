@@ -343,7 +343,7 @@ onMounted(() => {
         `<a href="https://github.com/efohuajiao/TIndex" target='_blank'> GitHub Open Source</a>`
     );
     terminal.writeTextOutput(
-      `Author <a href="//docs.qq.com/doc/DUFFRVWladXVjeUxW" target="_blank">coder_truett</a>` +
+      `Author <a href="https://github.com/efohuajiao" target="_blank">coder_truett</a>` +
         `: please input 'help' to enjoy`
     );
     terminal.writeTextOutput("<br/>");
