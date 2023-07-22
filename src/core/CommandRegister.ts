@@ -5,6 +5,8 @@ import hintCommnad from "./commands/terminal/config/HintCommand";
 import welcomeCommand from "./commands/terminal/config/welcomeCommand";
 import historyCommand from "./commands/terminal/historyCommand";
 import helpCommand from "./commands/terminal/help/helpCommand";
+import todoCommand from "./commands/todoCommand";
+import moyuCommand from "./commands/game";
 
 import CommandType = Command.CommandType;
 
@@ -16,6 +18,8 @@ const commandList: CommandType[] = [
   welcomeCommand,
   historyCommand,
   helpCommand,
+  todoCommand,
+  moyuCommand,
 ];
 
 //命令字典

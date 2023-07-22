@@ -77,5 +77,8 @@ declare namespace Tterminal {
 
     // 快捷键补齐
     setTabPatching: () => void;
+
+    // 设置命令是否折叠
+    setCommandCollapsible: (collapsible: boolean) => void;
   }
 }

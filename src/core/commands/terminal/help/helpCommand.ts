@@ -6,6 +6,7 @@ const helpCommand: CommandType = {
   func: "help",
   name: "查看帮助",
   options: [],
+  collapsible: true,
   params: [
     {
       key: "commandName",
@@ -24,15 +25,27 @@ const helpCommand: CommandType = {
       return;
     }
     const commandName = _[0];
-    const command = commandMap[commandName];
-    console.log(command);
+    let commands = commandMap;
+
+    // 输出子命令的帮助
+    if (
+      parentCommand &&
+      parentCommand.subCommands &&
+      Object.keys(parentCommand).length > 1
+    ) {
+      commands = parentCommand.subCommands;
+    }
+
+    const command = commands[commandName];
 
     if (!command) {
       terminal.writeTextErrorResult("没有找到该命令！");
     }
     const output: ComponentOutputType = {
       type: "component",
-      component: defineAsyncComponent(() => import("./CommandHelpBox.vue")),
+      component: markRaw(
+        defineAsyncComponent(() => import("./CommandHelpBox.vue"))
+      ),
       props: {
         command,
         parentCommand,

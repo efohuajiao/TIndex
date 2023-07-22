@@ -32,7 +32,16 @@ const useHint = () => {
       return;
     }
     // 将命令传入getUsageStr
-    hint.value = getUsageStr(command);
+    // 子命令提示
+    if (
+      command.subCommands &&
+      Object.keys(command.subCommands).length > 0 &&
+      args.length > 1
+    ) {
+      hint.value = getUsageStr(command.subCommands[args[1]], command);
+    } else {
+      hint.value = getUsageStr(command);
+    }
   };
 
   // 防抖处理

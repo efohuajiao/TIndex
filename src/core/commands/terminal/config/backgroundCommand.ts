@@ -1,4 +1,4 @@
-import axios from "axios";
+import { getBackground } from "@/api";
 import { useTerminalConfigStore } from "@/store/terminalConfigStore";
 import CommandType = Command.CommandType;
 
@@ -14,14 +14,16 @@ const backgroundCommand: CommandType = {
       required: false,
     },
   ],
-  action(options, terminal) {
-    const terminalConfig = useTerminalConfigStore();
-    const { setBackground } = terminalConfig;
-    axios
-      .get("https://api.btstu.cn/sjbz/api.php?lx=dongman&format=json")
-      .then((res) => {
-        setBackground(res.data.imgurl);
-      });
+  async action(options, terminal) {
+    try {
+      const terminalConfig = useTerminalConfigStore();
+      const { setBackground } = terminalConfig;
+      let res = await getBackground();
+      setBackground(res.imgurl);
+    } catch (e) {
+      const text: string = e as string;
+      terminal.writeTextResult(text);
+    }
   },
 };
 export default backgroundCommand;

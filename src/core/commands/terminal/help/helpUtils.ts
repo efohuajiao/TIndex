@@ -13,10 +13,14 @@ export const getUsageStr = (
 ) => {
   if (!command) return "";
   let str = "";
+  if (parentCommand) {
+    str = parentCommand.func + " ";
+  }
   str += command.func;
+
   if (command.options && command.options.length > 0) {
     const optionsStrList: string[] = command.options.map((option) => {
-      // 如果option有desc，九江word赋值为desc，否则就是key
+      // 如果option有desc，就将word赋值为desc，否则就是key
       let optionKey = getOptionKey(option);
       // 根据命令的option参数required是否为必须来决定命令的展示为<>还是[]
       if (option.type === "boolean") {
@@ -35,7 +39,7 @@ export const getUsageStr = (
           word = option.desc;
         }
         if (option.required) {
-          return `<${optionKey} ${word}]`;
+          return `<${optionKey} ${word}>`;
         } else {
           return `[${optionKey} ${word}] `;
         }

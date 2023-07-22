@@ -2,7 +2,7 @@
 import getopts, { ParsedOptions } from "getopts";
 // 引入命令集
 import { commandList, commandMap } from "./CommandRegister";
-
+import helpCommand from "./commands/terminal/help/helpCommand";
 // 引入终端类型声明
 import TerminalType = Tterminal.TerminalType;
 import CommandType = Command.CommandType;
@@ -33,9 +33,20 @@ export const doCommandExecute = async (
     return;
   }
   const parsedOptions = doParse(inputText, command.options);
-  console.log(parsedOptions);
 
-  await doAction(command, terminal, parsedOptions);
+  const { _ } = parsedOptions;
+  if (
+    _.length > 0 &&
+    command.subCommands &&
+    Object.keys(command.subCommands).length > 0
+  ) {
+    // 将子命令当作新命令解析，user login xxx => login xxx
+    const subText = inputText.substring(inputText.indexOf(" ")) + 1;
+    await doCommandExecute(subText, terminal, command);
+    return;
+  }
+
+  await doAction(command, parsedOptions, terminal, parentCommand);
 };
 
 /**
@@ -47,7 +58,16 @@ export const doCommandExecute = async (
 const getCommand = (text: string, parentCommand?: CommandType): CommandType => {
   text = text.trim(); // 去除命令前面的空格
   let func = text.split(" ", 1)[0];
-  const command = commandMap[func];
+  let commands = commandMap;
+  // 如果有父命令，则在父命令中查找
+  if (
+    parentCommand &&
+    parentCommand.subCommands &&
+    Object.keys(parentCommand.subCommands).length > 0
+  ) {
+    commands = parentCommand.subCommands;
+  }
+  const command = commands[func];
   return command;
 };
 
@@ -91,8 +111,19 @@ const doParse = (
  */
 const doAction = async (
   command: CommandType,
+  options: ParsedOptions,
   terminal: TerminalType,
-  options: ParsedOptions
+  parentCommand?: CommandType
 ) => {
+  const { help } = options;
+  // 设置输出折叠
+  if (command.collapsible || help) {
+    terminal.setCommandCollapsible(true);
+  }
+  if (help) {
+    const newOptions = { ...options, _: [command.func] };
+    helpCommand.action(newOptions, terminal, parentCommand);
+    return;
+  }
   await command.action(options, terminal);
 };

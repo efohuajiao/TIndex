@@ -5,7 +5,7 @@
     :style="wrapperStyle"
     @click="handleClickWrapper"
   >
-    <div class="Tterminal" :style="mainStyle">
+    <div ref="terminalRef" class="Tterminal" :style="mainStyle">
       <!-- 已输出命令 -->
       <a-collapse
         v-model:activeKey="activeKeys"
@@ -14,7 +14,11 @@
       >
         <template v-for="(output, index) in outputList" :key="index">
           <!-- 可折叠的命令 -->
-          <a-collapse-panel v-if="output.collapsible" class="terminal-row">
+          <a-collapse-panel
+            v-if="output.collapsible"
+            :key="index"
+            class="terminal-row"
+          >
             <template #header>
               <span style="user-select: none; margin-right: 10px">{{
                 prompt
@@ -23,6 +27,13 @@
                 {{ output.text }}
               </span>
             </template>
+            <div
+              v-for="(result, idx) in output.resultList"
+              :key="idx"
+              class="terminal-row"
+            >
+              <content-output :output="result" />
+            </div>
           </a-collapse-panel>
           <!-- 不可折叠的命令 -->
           <template v-else>
@@ -39,7 +50,7 @@
                 :key="idx"
                 class="terminal-row"
               >
-                <content-output :output="result" />
+                <contentOutput :output="result" />
               </div>
             </template>
             <!-- 不是命令直接输出文本 -->
@@ -112,6 +123,9 @@ interface TnTerminalProps {
 
 const activeKeys = ref<number[]>([]); //折叠框是否折叠
 
+// terminalRef
+const terminalRef = ref();
+
 //初始化命令
 const initCommand: CommandInputType = {
   text: "",
@@ -181,6 +195,10 @@ const doSubmitCommand = async () => {
   }
   InputCommand.value = { ...initCommand };
   activeKeys.value.push(outputList.value.length - 1);
+  // 自动滚到底部
+  setTimeout(() => {
+    terminalRef.value.scrollTop = terminalRef.value.scrollHeight;
+  }, 50);
   isRunning.value = false;
 };
 
@@ -195,6 +213,15 @@ const isInputFocus = () => {
     (commandInputRef.value.input as HTMLInputElement) === document.activeElement
   );
 };
+
+/**
+ * 设置命令是否可折叠
+ * @param collapsible
+ */
+const setCommandCollapsible = (collapsible: boolean) => {
+  currentNewCommand.collapsible = collapsible;
+};
+
 //清屏
 const clear = () => {
   outputList.value = [];
@@ -338,6 +365,7 @@ const terminal: TerminalType = {
   showPreCommand,
   listCommandHistory,
   setTabPatching,
+  setCommandCollapsible,
 };
 defineExpose({
   //使用setup，父组件无法通过ref获取子组件的属性，需要通过defineEpose自行暴露
@@ -349,15 +377,18 @@ defineExpose({
 .Tterminal-wrapper {
   background-color: black;
 }
+
 .Tterminal {
   background: rgba(0, 0, 0, 0.6);
   padding: 20px;
   overflow: scroll;
 }
+
 // 清除滚动条
 .Tterminal::-webkit-scrollbar {
   display: none;
 }
+
 .Tterminal
   :deep(
     .ant-collapse-icon-position-right
@@ -379,26 +410,31 @@ defineExpose({
 .Tterminal :deep(.ant-collapse-content > .ant-collapse-content-box) {
   padding: 0;
 }
+
 // 输入框样式
 .command-input {
   border: none;
   caret-color: white;
 }
+
 .command-input :deep(input) {
   color: white !important;
   font-size: 17px;
   padding: 0 10px;
 }
+
 .command-input :deep(.ant-input-group-addon) {
   background: none;
   border: none;
   padding: 0;
   font-size: 17px;
 }
+
 // 输入框前缀样式
 .command-input-prompt {
   color: white;
 }
+
 // 命令行样式
 .terminal-row {
   color: white;
