@@ -1,7 +1,10 @@
 import axios from "axios";
 
+const myAxios = axios.create({
+  baseURL: "http://localhost:1300/api",
+});
 // 添加请求拦截器
-axios.interceptors.request.use(
+myAxios.interceptors.request.use(
   function (config) {
     // 在发送请求之前做些什么
     return config;
@@ -13,7 +16,7 @@ axios.interceptors.request.use(
 );
 
 // 添加响应拦截器
-axios.interceptors.response.use(
+myAxios.interceptors.response.use(
   function (response) {
     // 对响应数据做点什么
     return response.data;
@@ -24,4 +27,4 @@ axios.interceptors.response.use(
   }
 );
 
-export default axios;
+export default myAxios;

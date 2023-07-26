@@ -18,7 +18,8 @@ const backgroundCommand: CommandType = {
     try {
       const terminalConfig = useTerminalConfigStore();
       const { setBackground } = terminalConfig;
-      let res = await getBackground();
+      let res: any = await getBackground();
+
       setBackground(res.imgurl);
     } catch (e) {
       const text: string = e as string;

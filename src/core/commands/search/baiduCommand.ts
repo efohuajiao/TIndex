@@ -1,5 +1,9 @@
 import CommandType = Command.CommandType;
 
+/**
+ * @description: 百度搜索
+ * @return {*}
+ */
 const baiduCommand: CommandType = {
   func: "baidu",
   name: "百度搜素",

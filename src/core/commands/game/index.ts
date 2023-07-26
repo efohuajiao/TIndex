@@ -11,7 +11,7 @@ const moyuCommand: CommandType = {
   action(options, terminal) {
     const output: CommponentOutputType = {
       type: "component",
-      component: markRaw(defineAsyncComponent(() => import("./moyuBox.vue"))),
+      component: markRaw(defineAsyncComponent(() => import("./MoYuBox.vue"))),
       props: {},
     };
     terminal.writeResult(output);

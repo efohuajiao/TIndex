@@ -19,7 +19,7 @@ const helpCommand: CommandType = {
     if (_.length < 1) {
       const output: ComponentOutputType = {
         type: "component",
-        component: markRaw(defineAsyncComponent(() => import("./helpBox.vue"))),
+        component: markRaw(defineAsyncComponent(() => import("./HelpBox.vue"))),
       };
       terminal.writeResult(output);
       return;

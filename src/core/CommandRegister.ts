@@ -9,6 +9,13 @@ import todoCommand from "./commands/todoCommand";
 import moyuCommand from "./commands/game";
 import baiduCommand from "./commands/search/baiduCommand";
 import githubCommand from "./commands/search/githubCommand";
+import doubanCommand from "./commands/search/doubanCommand";
+import douyinCommand from "./commands/search/douyinCommand";
+import resetCommand from "./commands/terminal/config/resetCommand";
+import zhihuCommand from "./commands/search/zhihuCommand";
+import wangyiyunCommand from "./commands/search/wangyiyunCommand";
+import sogouCommand from "./commands/search/sogouCommand";
+import translateCommand from "./commands/translateCommand";
 
 import CommandType = Command.CommandType;
 
@@ -24,6 +31,13 @@ const commandList: CommandType[] = [
   moyuCommand,
   baiduCommand,
   githubCommand,
+  doubanCommand,
+  douyinCommand,
+  zhihuCommand,
+  wangyiyunCommand,
+  sogouCommand,
+  resetCommand,
+  translateCommand,
 ];
 
 //命令字典

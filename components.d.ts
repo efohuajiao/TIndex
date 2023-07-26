@@ -17,17 +17,11 @@ declare module 'vue' {
     AList: typeof import('ant-design-vue/es')['List']
     AListItem: typeof import('ant-design-vue/es')['ListItem']
     AListItemMeta: typeof import('ant-design-vue/es')['ListItemMeta']
-    AMenu: typeof import('ant-design-vue/es')['Menu']
-    AMenuItem: typeof import('ant-design-vue/es')['MenuItem']
     ARow: typeof import('ant-design-vue/es')['Row']
-    ASubMenu: typeof import('ant-design-vue/es')['SubMenu']
     ATag: typeof import('ant-design-vue/es')['Tag']
-    Components: typeof import('./src/components/index.vue')['default']
     ContentOutput: typeof import('./src/components/ContentOutput.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TnTerminal: typeof import('./src/components/TnTerminal.vue')['default']
-    Tterminal: typeof import('./src/components/Tterminal.vue')['default']
-    TTerminal: typeof import('./src/components/TTerminal.vue')['default']
   }
 }
