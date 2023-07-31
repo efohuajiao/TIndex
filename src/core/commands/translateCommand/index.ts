@@ -29,27 +29,29 @@ const translateCommand: CommandType = {
     },
   ],
   async action(options, terminal) {
+    let { _, from, to } = options;
+    if (_.length < 1) {
+      terminal.writeTextErrorResult("请输入需要翻译的内容");
+      return;
+    }
+    if (!from) {
+      from = "auto";
+    }
+    if (!to) {
+      to = "auto";
+    }
     try {
-      let { _, from, to } = options;
-      if (_.length < 1) {
-        terminal.writeTextErrorResult("请输入需要翻译的内容");
-        return;
-      }
-      if (!from) {
-        from = "auto";
-      }
-      if (!to) {
-        to = "auto";
-      }
       const keywords = _.join(" ");
       const res: any = await getTranslateResult(keywords, { from, to });
-      if (res?.code === 200) {
+      if (res.code === 200) {
         const { dst } = res.data.trans_result[0];
-        terminal.writeTextOutput(`翻译结果：${dst}`);
+        terminal.writeTextSuccessResult(`翻译结果：${dst}`);
       } else {
         terminal.writeTextErrorResult(res?.message ?? "翻译失败");
       }
-    } catch (e) {}
+    } catch (e: any) {
+      terminal.writeTextErrorResult(e);
+    }
   },
 };
 

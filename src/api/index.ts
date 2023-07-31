@@ -5,14 +5,17 @@ export function getBackground() {
   return myAxios.get("/bg");
 }
 
-export function getTranslateResult(
+export const getTranslateResult = async (
   keywords: string,
   config: Record<string, string>
-) {
-  return myAxios.get("/fanyi", {
+) => {
+  if (!keywords) {
+    return null;
+  }
+  return await myAxios.get("/fanyi", {
     params: {
       keywords,
       config,
     },
   });
-}
+};

@@ -40,6 +40,7 @@ const helpCommand: CommandType = {
 
     if (!command) {
       terminal.writeTextErrorResult("没有找到该命令！");
+      return;
     }
     const output: ComponentOutputType = {
       type: "component",

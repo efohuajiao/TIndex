@@ -16,7 +16,7 @@ import zhihuCommand from "./commands/search/zhihuCommand";
 import wangyiyunCommand from "./commands/search/wangyiyunCommand";
 import sogouCommand from "./commands/search/sogouCommand";
 import translateCommand from "./commands/translateCommand";
-
+import spaceCommands from "./commands/space/spaceCommands";
 import CommandType = Command.CommandType;
 
 //命令列表
@@ -38,6 +38,7 @@ const commandList: CommandType[] = [
   sogouCommand,
   resetCommand,
   translateCommand,
+  ...spaceCommands,
 ];
 
 //命令字典

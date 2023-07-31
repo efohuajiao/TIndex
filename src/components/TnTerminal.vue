@@ -323,7 +323,7 @@ const wrapperStyle = computed(() => {
   // console.log(background);
 
   if (background.startsWith("http")) {
-    style.background = `url(${background})`;
+    style.background = `url(${background}) 100%`;
   } else {
     style.background = background;
   }
