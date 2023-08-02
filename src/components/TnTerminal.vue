@@ -344,7 +344,7 @@ onMounted(() => {
     );
     terminal.writeTextOutput(
       `Author <a href="https://github.com/efohuajiao" target="_blank">coder_truett</a>` +
-        `: please input 'help' to enjoy`
+        `: please input <span style="color:red;font-weight:700"}>'help'</span> to enjoy`
     );
     terminal.writeTextOutput("<br/>");
   }

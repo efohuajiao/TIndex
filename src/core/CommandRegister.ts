@@ -17,6 +17,7 @@ import wangyiyunCommand from "./commands/search/wangyiyunCommand";
 import sogouCommand from "./commands/search/sogouCommand";
 import translateCommand from "./commands/translateCommand";
 import spaceCommands from "./commands/space/spaceCommands";
+import musicCommand from "./commands/music";
 import CommandType = Command.CommandType;
 
 //命令列表
@@ -39,6 +40,7 @@ const commandList: CommandType[] = [
   resetCommand,
   translateCommand,
   ...spaceCommands,
+  musicCommand,
 ];
 
 //命令字典
