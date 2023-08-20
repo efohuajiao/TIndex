@@ -38,7 +38,7 @@ git pull https://github.com/efohuajiao/TIndex.git
 2. 启动前端
 
 ```
-cd friendContact_fronted
+cd TIndex
 npm run dev
 ```
 
