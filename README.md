@@ -32,7 +32,7 @@
 1. 拉代码
 
 ```
-git pull https://github.com/efohuajiao/friendContact_fronted.git
+git pull https://github.com/efohuajiao/TIndex.git
 ```
 
 2. 启动前端
