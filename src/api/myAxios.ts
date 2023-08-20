@@ -3,7 +3,7 @@ import axios from "axios";
 const myAxios = axios.create({
   baseURL:
     process.env.NODE_ENV === "production"
-      ? "http://t-terminal.icu:1300/api"
+      ? "/api"
       : "http://localhost:1300/api",
 });
 // 添加请求拦截器
